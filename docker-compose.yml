@@ -1,0 +1,70 @@
+version: "3.9"
+services:
+  db_mysql:
+    image: mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    hostname: mysqldb
+    environment:
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: my_db
+      MYSQL_ROOT_PASSWORD: root
+  zookeeper:
+    image: debezium/zookeeper:1.5
+    ports:
+      - 2181:2181
+      - 2888:2888
+      - 3888:3888
+  kafka:
+    image: debezium/kafka:1.5
+    ports:
+      - "9092:9092"
+    links:
+      - zookeeper
+    environment:
+      - ZOOKEEPER_CONNECT=zookeeper:2181
+  connect:
+    image: debezium/connect:1.5
+    #build: .
+    ports:
+      - "8083:8083"
+    links:
+      - kafka
+      - db_mysql
+    environment:
+      - LOG_LEVEL=TRACE
+      - BOOTSTRAP_SERVERS=kafka:9092
+      - GROUP_ID=1
+      - CONFIG_STORAGE_TOPIC=my_connect_configs
+      - OFFSET_STORAGE_TOPIC=my_connect_offsets
+      - STATUS_STORAGE_TOPIC=my_connect_statuses
+  kowl:
+    image: quay.io/cloudhut/kowl:master
+    depends_on:
+      - kafka
+    restart: on-failure:10
+    ports:
+      - "8080:8080"
+    links:
+      - kafka
+    environment:
+      - KAFKA_BROKERS=kafka:9092
+  kafka-connect-ui:
+    image: landoop/kafka-connect-ui:0.9.7
+    hostname: kafka-connect-ui
+    # kafka-connect-ui binds to port 8000, but we are going to expose it on our local
+    # machine on port 8002.
+    ports:
+      - "8002:8000"
+    environment:
+      # Required. Instructs the UI where it can find Kafka Connect.
+      CONNECT_URL: "http://connect:8083/"
+      # This instructs the docker image to use Caddy to proxy traffic to kafka-connect-ui.
+      PROXY: "true"
+    # kafka-connect-ui relies upon Kafka Connect.
+    # This will instruct docker to wait until those services are up
+    # before attempting to start kafka-connect-ui.
+    depends_on:
+      - connect

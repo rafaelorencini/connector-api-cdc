@@ -1,0 +1,15 @@
+#database_hostname: str
+#database_user: str
+#database_password: str
+#database_server_name: str
+#database_include_list: str
+#table_include_list: str
+snapshot_locking_mode: "none"
+snapshot_mode: "schema_only"
+decimal_handling_mode: "string"
+database_port: "3306"
+value_converter: "io.confluent.connect.avro.AvroConverter"
+key_converter: "io.confluent.connect.avro.AvroConverter"
+#schema_registry_url: str
+#key_converter_schema_registry_url: str
+#value_converter_schema_registry_url: str
