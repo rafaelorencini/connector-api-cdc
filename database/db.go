@@ -1,8 +1,8 @@
 package database
 
 import (
-	"connector-api-cdc/domain"
 	"fmt"
+	"github.com/rafaelorencini/connector-api-cdc/domain"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

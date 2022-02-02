@@ -2,6 +2,7 @@ package kafka_connect
 
 import (
 	"bytes"
+	"github.com/rafaelorencini/connector-api-cdc/domain"
 	"log"
 	"net/http"
 	"time"
@@ -12,12 +13,12 @@ const endpoint = "http://localhost:8083/connectors"
 type KafkaConnect struct {
 }
 
-func (c *KafkaConnect) httpClient() *http.Client {
-	client := &http.Client{Timeout: 10 * time.Second}
-	return client
+func NewKafkaConnect() domain.KafkaConnectInterface {
+	return new(KafkaConnect)
 }
 
-func (c *KafkaConnect) sendRequest(client *http.Client, method string, payload string) *http.Response {
+func (c *KafkaConnect) SendRequest(method string, payload string) *http.Response {
+	client := &http.Client{Timeout: 10 * time.Second}
 	var jsonData = []byte(payload)
 
 	req, err := http.NewRequest(method, endpoint, bytes.NewBuffer(jsonData))

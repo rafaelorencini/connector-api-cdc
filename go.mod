@@ -1,4 +1,4 @@
-module connector-api-cdc
+module github.com/rafaelorencini/connector-api-cdc
 
 go 1.17
 

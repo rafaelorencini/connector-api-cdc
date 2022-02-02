@@ -1,12 +1,12 @@
 package main
 
 import (
-	"connector-api-cdc/database"
-	"connector-api-cdc/handler"
-	"connector-api-cdc/repository"
-	"connector-api-cdc/service"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/rafaelorencini/connector-api-cdc/database"
+	"github.com/rafaelorencini/connector-api-cdc/handler"
+	"github.com/rafaelorencini/connector-api-cdc/repository"
+	"github.com/rafaelorencini/connector-api-cdc/service"
 	"gorm.io/gorm"
 	"log"
 )

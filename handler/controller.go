@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"connector-api-cdc/domain"
 	"errors"
 	"github.com/gofiber/fiber/v2"
+	"github.com/rafaelorencini/connector-api-cdc/domain"
 	"gorm.io/gorm"
 	"net/http"
 )

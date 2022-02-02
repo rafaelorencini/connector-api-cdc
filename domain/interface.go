@@ -1,5 +1,7 @@
 package domain
 
+import "net/http"
+
 type ConnectorServices interface {
 	CreateConnector(connector *Connector) error
 	GetConnectors(connector *[]Connector) error
@@ -25,6 +27,18 @@ type Writer interface {
 	DeleteConnector(Connector *Connector, id string) error
 }
 
-type KafkaConnectRequests interface {
-	CreateConnectorKafkaConnect(payload *string) error
+type ReadYamlInterface interface {
+	Read() (map[string]string, error)
+}
+
+type BuildRequestInterface interface {
+	Build(connector *Connector) (string, error)
+}
+
+type GetSecretsInterface interface {
+	Get() (map[string]string, error)
+}
+
+type KafkaConnectInterface interface {
+	SendRequest(method string, payload string) *http.Response
 }

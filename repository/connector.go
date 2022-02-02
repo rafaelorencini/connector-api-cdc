@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"connector-api-cdc/domain"
 	"gorm.io/gorm"
 )
 
