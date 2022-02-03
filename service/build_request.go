@@ -3,18 +3,19 @@ package service
 import (
 	"encoding/json"
 	"github.com/rafaelorencini/connector-api-cdc/domain"
-	"strings"
 )
 
 type BuildRequestService struct {
-	ReadYaml   domain.ReadYamlInterface
-	GetSecrets domain.GetSecretsInterface
+	ReadYaml     domain.ReadYamlInterface
+	GetSecrets   domain.GetSecretsInterface
+	MapFunctions map[string]domain.RequestBuilder
 }
 
-func NewBuildRequestService(readYaml domain.ReadYamlInterface, getSecrets domain.GetSecretsInterface) domain.BuildRequestInterface {
+func NewBuildRequestService(readYaml domain.ReadYamlInterface, getSecrets domain.GetSecretsInterface, mapFunctions map[string]domain.RequestBuilder) domain.BuildRequestInterface {
 	return &BuildRequestService{
-		ReadYaml:   readYaml,
-		GetSecrets: getSecrets,
+		ReadYaml:     readYaml,
+		GetSecrets:   getSecrets,
+		MapFunctions: mapFunctions,
 	}
 }
 
@@ -34,15 +35,14 @@ func (br *BuildRequestService) mountPayloadMap(connector *domain.Connector, merg
 
 func (br *BuildRequestService) mountConfigs(connector *domain.Connector) map[string]string {
 	secrets, _ := br.GetSecrets.Get()
-	defaultConfig, _ := br.ReadYaml.Read()
+	defaultGroup := connector.DatabaseType + "." + connector.ConnectorType
+	defaultConfig, _ := br.ReadYaml.Read(defaultGroup)
 
 	mergedConfig := br.mergeMaps(secrets, defaultConfig)
-
 	tablesNames := br.getTablesNames(connector)
-	mergedConfig["table.include.list"] = strings.Join(tablesNames[:], ",")
-	mergedConfig["database.server.name"] = connector.DatabaseName
-
-	return mergedConfig
+	key := connector.DatabaseType + "_" + connector.ConnectorType
+	payloadMap := br.MapFunctions[key].Build(connector, mergedConfig, tablesNames)
+	return payloadMap
 }
 
 func (br *BuildRequestService) generatePayloadString(payloadMap map[string]interface{}) string {

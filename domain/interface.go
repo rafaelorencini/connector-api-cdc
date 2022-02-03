@@ -28,7 +28,7 @@ type Writer interface {
 }
 
 type ReadYamlInterface interface {
-	Read() (map[string]string, error)
+	Read(defaultPropertiesGroup string) (map[string]string, error)
 }
 
 type BuildRequestInterface interface {
@@ -41,4 +41,8 @@ type GetSecretsInterface interface {
 
 type KafkaConnectInterface interface {
 	SendRequest(method string, payload string) *http.Response
+}
+
+type RequestBuilder interface {
+	Build(connector *Connector, mergedConfig map[string]string, tablesNames []string) map[string]string
 }

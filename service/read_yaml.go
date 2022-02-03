@@ -1,6 +1,10 @@
 package service
 
-import "github.com/rafaelorencini/connector-api-cdc/domain"
+import (
+	"github.com/rafaelorencini/connector-api-cdc/domain"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
+)
 
 type ReadYamlService struct {
 }
@@ -9,15 +13,11 @@ func NewReadYamlService() domain.ReadYamlInterface {
 	return new(ReadYamlService)
 }
 
-func (r *ReadYamlService) Read() (map[string]string, error) {
-	m := map[string]string{
-		"connector.class":                          "io.debezium.connector.mysql.MySqlConnector",
-		"tasks.max":                                "1",
-		"database.server.id":                       "184054",
-		"database.server.name":                     "dbserver1",
-		"database.history.kafka.bootstrap.servers": "kafka:9092",
-		"database.history.kafka.topic":             "schema-changes.my_db",
-	}
-
-	return m, nil
+func (r *ReadYamlService) Read(defaultPropertiesGroup string) (map[string]string, error) {
+	pathConfigs := "configs/default_configs.yaml"
+	buf, _ := ioutil.ReadFile(pathConfigs)
+	configsMap := make(map[string]map[string]string)
+	yaml.Unmarshal(buf, configsMap)
+	groupConfigs := configsMap[defaultPropertiesGroup]
+	return groupConfigs, nil
 }
