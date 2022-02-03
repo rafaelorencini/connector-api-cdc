@@ -1,26 +1,39 @@
 package service
 
 import (
-	"connector-api-cdc/domain"
+	"github.com/rafaelorencini/connector-api-cdc/domain"
+	"net/http"
 )
 
 type ConnectorService struct {
 	connectorRepository domain.ConnectorRepository
+	buildRequest        domain.BuildRequestInterface
+	kafkaConnect        domain.KafkaConnectInterface
 }
 
-func NewConnectorService(r domain.ConnectorRepository) domain.ConnectorServices {
+func NewConnectorService(r domain.ConnectorRepository, b domain.BuildRequestInterface, k domain.KafkaConnectInterface) domain.ConnectorServices {
 	return &ConnectorService{
 		connectorRepository: r,
+		buildRequest:        b,
+		kafkaConnect:        k,
 	}
 }
 
 //create connector
-func (s *ConnectorService) CreateConnector(connector *domain.Connector) error {
-	err := s.connectorRepository.CreateConnector(connector)
+func (c *ConnectorService) CreateConnector(connector *domain.Connector) error {
+	err := c.connectorRepository.CreateConnector(connector)
 	if err != nil {
 		return err
 	}
+
+	c.registrateConnector(connector, err)
+
 	return nil
+}
+
+func (c *ConnectorService) registrateConnector(connector *domain.Connector, err error) {
+	payload, err := c.buildRequest.Build(connector)
+	c.kafkaConnect.SendRequest(http.MethodPost, payload)
 }
 
 //get connectors
