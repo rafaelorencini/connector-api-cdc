@@ -22,6 +22,8 @@ type Connector struct {
 	gorm.Model
 	ID            int      `gorm:"primaryKey;autoIncrement"`
 	ConnectorName string   `valid:"required"`
+	ConnectorType string   `valid:"required"`
+	DatabaseType  string   `valid:"required"`
 	DatabaseName  string   `valid:"required"`
 	Tables        []Tables `gorm:"ForeignKey:FkConnectorId"`
 }
