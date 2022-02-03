@@ -25,6 +25,7 @@ func (c *KafkaConnect) SendRequest(method string, payload string) *http.Response
 	if err != nil {
 		log.Fatalf("Error Occurred. %+v", err)
 	}
+	req.Header.Add("Content-Type", "application/json")
 
 	response, err := client.Do(req)
 	if err != nil {

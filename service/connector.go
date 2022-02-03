@@ -11,9 +11,11 @@ type ConnectorService struct {
 	kafkaConnect        domain.KafkaConnectInterface
 }
 
-func NewConnectorService(r domain.ConnectorRepository) domain.ConnectorServices {
+func NewConnectorService(r domain.ConnectorRepository, b domain.BuildRequestInterface, k domain.KafkaConnectInterface) domain.ConnectorServices {
 	return &ConnectorService{
 		connectorRepository: r,
+		buildRequest:        b,
+		kafkaConnect:        k,
 	}
 }
 

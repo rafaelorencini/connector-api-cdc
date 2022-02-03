@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/rafaelorencini/connector-api-cdc/domain"
 	"gorm.io/gorm"
 )
 

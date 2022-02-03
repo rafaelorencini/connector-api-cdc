@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"net/http"
 )
@@ -37,21 +36,21 @@ func main() {
 	//}
 	//fmt.Println(string(e))
 
-	//Run(3000)
-	mytest()
-
-	buf, err := ioutil.ReadFile("/Users/rafael.lorencini/connector-api-v1/defaults/mysql/sink.yaml")
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	data := make(map[string]string)
-
-	err = yaml.Unmarshal(buf, data)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(data["behavior_on_null_values"], err)
+	Run(3000)
+	//mytest()
+	//
+	//buf, err := ioutil.ReadFile("/Users/rafael.lorencini/connector-api-v1/defaults/mysql/sink.yaml")
+	//if err != nil {
+	//	fmt.Println(err)
+	//}
+	//
+	//data := make(map[string]string)
+	//
+	//err = yaml.Unmarshal(buf, data)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//fmt.Println(data["behavior_on_null_values"], err)
 
 }
 
